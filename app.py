@@ -81,6 +81,69 @@ def register():
         )
 
 
+# Making a POST request to login a user
+@app.route('/login', methods=['POST'])
+def login():
+    """ Login a user """
+    try:
+        # Taking the data from the request
+        data = app.current_request.json_body
+        user_name = data['user_name']
+        password = data['password']
+        isUser = False
+
+        # Checking if user name is registered
+        users = local_session.query(User).all()
+        for user in users:
+            if(user.user_name == user_name):
+                old_password = user.password
+                isUser = True
+
+        # If user name is not registered return error
+        if not isUser:
+            return Response(
+                body={
+                    "Type": "Error",
+                    "Message": "User not registered",
+                },
+                status_code=400,
+            )
+
+        #  Converting the password to hash
+        h = sha256()
+        h.update(password.encode())
+        hash = h.hexdigest()
+
+        # Checking if password is correct
+        if(old_password != hash):
+            return Response(
+                body={
+                    "Type": "Error",
+                    "Message": "Password is incorrect",
+                },
+                status_code=400,
+            )
+
+        return Response(
+            body={
+                "Type": "Success",
+                "Message": "User logged in successfully",
+            },
+            status_code=200,
+        )
+
+    # Handling the error
+    except Exception as e:
+        return Response(
+            body={
+                "Type": "Error",
+                "Message": "Something went wrong, please try again.",
+                "Error": str(e),
+            },
+            status_code=400,
+        )
+
+
 #  Driver code
 if "__name__" == "__main__":
     app.run(debug=True)
