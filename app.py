@@ -4,7 +4,7 @@ from DatabaseTasks.main import Product, Session, User, engine
 import requests
 from hashlib import sha256
 
-app = Chalice(__name__)
+app = Chalice(app_name="checkout_cart")
 
 local_session = Session(bind=engine)
 
@@ -144,6 +144,6 @@ def login():
         )
 
 
-# #  Driver code
-# if "__name__" == "__main__":
-#     app.run(debug=True)
+#  Driver code
+if "__name__" == "__main__":
+    app.run(debug=True)
