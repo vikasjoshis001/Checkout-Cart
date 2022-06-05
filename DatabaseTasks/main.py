@@ -5,7 +5,7 @@ from sqlalchemy import (FLOAT, Column, Float, ForeignKey, Integer, String,
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 engine = create_engine(
-    f"mysql+pymysql://vikas:vikas@localhost/shop_cart_db", echo=True)
+    f"mysql+pymysql://b16355fb702cb7:2b9520d9@us-cdbr-east-05.cleardb.net/heroku_d9841aa34bcd207", echo=True)
 
 Session = sessionmaker()
 
