@@ -3,27 +3,10 @@ import sqlalchemy as db
 from DatabaseTasks.main import Product, Session, User, engine
 import requests
 from hashlib import sha256
-from apispec import APISpec
 
-# Create an APISpec
-spec = APISpec(
-    title='AppName',
-    version='1.0.0',
-    openapi_version="3.0.2",
-    plugins=[],
-)
-app = Chalice(app_name='checkout_cart')
+app = Chalice(__name__)
 
 local_session = Session(bind=engine)
-
-
-# @app.route("/example", methods=["POST"], authorizer=oauth)
-# @swagger_doc(schema=RequestPayloadSchema or None,
-#              responses=[Response(status_code=400, title="Title", details={}, errors={}),
-#                         ...,
-#                         Response(status_code=200, title="Ok")])
-# def endpoint():
-#     pass
 
 
 @app.route('/')
@@ -161,6 +144,6 @@ def login():
         )
 
 
-#  Driver code
-if "__name__" == "__main__":
-    app.run(debug=True)
+# #  Driver code
+# if "__name__" == "__main__":
+#     app.run(debug=True)
