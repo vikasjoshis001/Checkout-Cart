@@ -3,6 +3,7 @@ import sqlalchemy as db
 from DatabaseTasks.main import Product, Session, User, engine
 import requests
 from hashlib import sha256
+import json
 
 app = Chalice(__name__)
 
@@ -143,6 +144,39 @@ def login():
             status_code=400,
         )
 
+@app.route('/api/getProduct')
+def get_product():
+    products=local_session.query(Product).all()
+    output=[]
+    for product in products:
+        dict={}
+        dict['id']=product.id
+        dict['title']=product.title
+        dict['price']=product.price
+        dict['category']=product.category
+        dict['description']=product.description
+        dict['image']=product.image
+
+        output.append(dict)
+    
+    return json.dumps(output,indent=4)
+
+@app.route('/api/getProduct/{id}')
+def get_particular_prod(id):
+    prod=local_session.query(Product).filter(Product.id==id).first()
+
+    if not prod:
+        return json.dumps({'message':'no such product'})
+
+    prod_data={}
+    prod_data['id']=prod.id
+    prod_data['title']=prod.title
+    prod_data['price']=prod.price
+    prod_data['category']=prod.category
+    prod_data['description']=prod.description
+    prod_data['image']=prod.image
+
+    return json.dumps(prod_data,indent=4)
 
 # #  Driver code
 # if "__name__" == "__main__":
