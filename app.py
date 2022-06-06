@@ -1,6 +1,6 @@
 from chalice import Chalice, Response
 import sqlalchemy as db
-from DatabaseTasks.main import Product, Session, User, engine
+from DatabaseTasks.main import Product, Session, User,Cart, engine
 import requests
 from hashlib import sha256
 import json
@@ -177,6 +177,30 @@ def get_particular_prod(id):
     prod_data['image']=prod.image
 
     return json.dumps(prod_data,indent=4)
+
+@app.route('/api/getCart/{uid}')
+def get_cart(uid):
+    cart_items=local_session.query(Cart).filter(Cart.userId==uid).all()
+
+    for item in cart_items:
+        item_det=local_session.query(Product).filter(Product.id==item.productId).first()
+
+        result=[]
+        for itm in item_det:
+            d={}
+            d['id']=itm.id
+            d['title']=itm.title
+            d['price']=itm.price
+            d['category']=itm.category
+            d['description']=itm.description
+            d['image']=itm.image
+
+            result.append(d)
+
+    return json.dumps(result,indent=4)
+            
+
+
 
 # #  Driver code
 # if "__name__" == "__main__":
