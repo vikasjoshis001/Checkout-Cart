@@ -1,0 +1,260 @@
+#  API Documentation using Swagger
+swagger: "2.0"
+info:
+  title: "API Documentation"
+  description: "Documentation for the API for the test service"
+  version: "1.0.0"
+
+# API Titles
+tags:
+  - name: "Account"
+    description: "API for Registering and Logining"
+  - name: "Cart"
+    description: "API for Adding and Removing Items from the Cart"
+  - name: "Product"
+    description: "API for Product CRUD"
+
+# API Schemas
+schemes:
+  - "https"
+  - "http"
+
+# API Paths
+
+# Path: /account
+paths:
+
+  # Path: /account/register
+  /api/account/register:
+    post:
+      tags:
+        - "Account"
+      summary: "Register a new user"
+      description: "API for Registering a new user"
+      operationId: "register"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User Details to be registered"
+          required: true
+          schema:
+            $ref: "#/definitions/Register"
+      responses:
+        "400":
+          description: "User already exists"
+        "201":
+          description: "User registered successfully"
+
+  # Path: /account/login
+  /api/account/login:
+    post:
+      tags:
+        - "Account"
+      summary: "Login a user"
+      description: "API for Logining a user"
+      operationId: "login"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User Credentials to be logged in"
+          required: true
+          schema:
+            $ref: "#/definitions/Login"
+      responses:
+        "400":
+          description: "Password is incorrect"
+        "404":
+          description: "User not found"
+        "201":
+          description: "User logged in successfully"
+
+  # Path: /cart
+  /api/cart:
+    post:
+      tags:
+        - "Cart"
+      summary: "Add an item to the cart"
+      description: "API for Adding an item to the cart"
+      operationId: "cart"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "UserId and ProductId to be added to the cart"
+          required: true
+          schema:
+            $ref: "#/definitions/HandleCart"
+      responses:
+        "403":
+          description: "Invalid Request"
+        "200":
+          description: "Item added to cart successfully"
+    delete:
+      tags:
+        - "Cart"
+      summary: "Delete an item from the cart"
+      description: "API for Deleting an item from the cart"
+      operationId: "cart"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "UserId and ProductId to be deleted from the cart"
+          required: true
+          schema:
+            $ref: "#/definitions/HandleCart"
+      responses:
+        "403":
+          description: "Invalid Request"
+        "200":
+          description: "Item deleted from cart successfully"
+
+  # Path: /cart/getCart/{userId}
+  /api/cart/getCart/{uid}:
+    get:
+      tags:
+        - "Cart"
+      summary: "To get the cart of a user"
+      description: "API for getting the cart of a user"
+      operationId: "getCart"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        "403":
+          description: "Something went wrong, please try again later."
+        "200":
+          description: "Cart retrieved successfully"
+
+  # Path: /product/getAllProducts
+  /api/product/getAllProducts:
+    get:
+      tags:
+        - "Product"
+      summary: "Get all products"
+      description: "API for getting all products"
+      operationId: "getProducts"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        "403":
+          description: "Something went wrong, please try again later."
+        "200":
+          description: "Products retrieved successfully"
+
+  # /product/getProduct/{productId}
+  /api/getProduct/{id}:
+    get:
+      tags:
+        - "Product"
+      summary: "Get a product by id"
+      description: "API for getting a product by id"
+      operationId: "getProduct"
+      consumes:
+        - "application/json"
+        - "application/xml"
+      produces:
+        - "application/xml"
+        - "application/json"
+      responses:
+        "403":
+          description: "No such product"
+        "200":
+          description: "Product retrieved successfully"
+
+# API Definitions
+definitions:
+  # Register
+  Register:
+    type: "object"
+    required:
+      - "user_name"
+      - "full_name"
+      - "password"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      user_name:
+        type: "string"
+        example: "xyz"
+      full_name:
+        type: "string"
+        example: "abc"
+      password:
+        type: "string"
+        example: "***"
+        enum:
+          - "Alredy Registered"
+          - "Registered Successfully"
+    xml:
+      name: "Register"
+
+  # Login
+  Login:
+    type: "object"
+    required:
+      - "user_name"
+      - "password"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      user_name:
+        type: "string"
+        example: "xyz"
+      password:
+        type: "string"
+        example: "***"
+        enum:
+          - "User not found"
+          - "Login Successful"
+    xml:
+      name: "Login"
+
+  # HandleCart
+  HandleCart:
+    type: "object"
+    required:
+      - "user_id"
+      - "product_id"
+    properties:
+      user_id:
+        type: "integer"
+        format: "int64"
+      product_id:
+        type: "integer"
+        format: "int64"
+        enum:
+          - "Item Added to Cart Successfully"
+    xml:
+      name: "HandleCart"

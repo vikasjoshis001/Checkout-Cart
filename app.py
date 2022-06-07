@@ -4,10 +4,14 @@ from DatabaseTasks.main import Product, Session, User, Cart, engine
 import requests
 from hashlib import sha256
 import json
+from swagger_ui import api_doc
 
 app = Chalice(__name__)
 
 local_session = Session(bind=engine)
+
+api_doc(app, config_path='./config/test.yaml',
+        url_prefix='/api/doc', title='API doc')
 
 
 @app.route('/')
@@ -16,7 +20,7 @@ def index():
 
 
 #  Making a POST request to register a new user
-@app.route('/register', methods=['POST'])
+@app.route('/api/account/register', methods=['POST'])
 def register():
     """ Register a new user """
     try:
@@ -83,7 +87,7 @@ def register():
 
 
 # Making a POST request to login a user
-@app.route('/login', methods=['POST'])
+@app.route('/api/account/login', methods=['POST'])
 def login():
     """ Login a user """
     try:
@@ -183,7 +187,7 @@ def handle_cart():
             return Response(status_code=400, body={"message": "Something went Wrong"})
 
 
-@app.route('/api/getProduct', methods=['GET'])
+@app.route('/api/product/getAllProducts', methods=['GET'])
 def get_product():
     try:
         products = local_session.query(Product).all()
@@ -204,7 +208,7 @@ def get_product():
         return Response("Something went wrong"+str(e), status_code=400)
 
 
-@app.route('/api/getProduct/{id}', methods=['GET'])
+@app.route('/api/product/getProduct/{id}', methods=['GET'])
 def get_particular_prod(id):
     prod = local_session.query(Product).filter(Product.id == id).first()
 
@@ -222,7 +226,7 @@ def get_particular_prod(id):
     return json.dumps(prod_data, indent=4)
 
 
-@app.route('/api/getCart/{uid}', methods=['GET'])
+@app.route('/api/cart/getCart/{uid}', methods=['GET'])
 def get_cart(uid):
     cart_items = local_session.query(Cart).filter(Cart.userId == uid).all()
     result = []
